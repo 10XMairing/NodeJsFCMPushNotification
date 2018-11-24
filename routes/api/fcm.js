@@ -13,34 +13,72 @@ const sendUrl = "https://fcm.googleapis.com/fcm/send"
 router.post('/send', (req, res, next)=>{
     const msg = req.body.message;
     const title = req.body.title;
-    const myJson = {
-        to : "/topics/test",
-        data : {
-            message : msg,
-            title : title
-        }
-    };
+    // const myJson = {
+    //     to : "/topics/test",
+    //     data : {
+    //         message : msg,
+    //         title : title
+    //     }
+    // };
 
-    const options = {
-        url : sendUrl,
-        method : "POST",
-        json : true,
-        headers : {
-            "Content-Type" : "application/json",
-            "Authorization": testserverauth
-        },
-        body : myJson
-    }
+    // const options = {
+    //     url : sendUrl,
+    //     method : "POST",
+    //     json : true,
+    //     headers : {
+    //         "Content-Type" : "application/json",
+    //         "Authorization": testserverauth
+    //     },
+    //     body : myJson
+    // }
 
-    request(options, (err, ress, body)=>{
-        if(err){
-            console.log(err);
-            res.status(500).json(err);
-        }else{
-            res.status(200).json(ress);
-            console.log(ress);
+
+    //collect tokens from database
+    Token.find().exec().then(docs=>{
+        const dbtoken = [];
+
+
+        for(const tok of docs){
+            dbtoken.push(tok["token"]);
         }
-    })
+        const myJson = {
+            registration_ids : dbtoken,
+            data : {
+                message : msg,
+                title : title
+            }
+        };
+
+        const options = {
+            url : sendUrl,
+            method : "POST",
+            json : true,
+            headers : {
+                "Content-Type" : "application/json",
+                "Authorization": testserverauth
+            },
+            body : myJson
+        }
+
+        request(options, (err, ress, body)=>{
+            if(err){
+                console.log(err);
+                res.status(500).json(err);
+            }else{
+                res.status(200).json(ress);
+                console.log(ress);
+            }
+        })
+
+    }).catch(err=>{
+        console.log(err);
+        res.status(500).json({
+            err : err
+        })
+    });
+
+
+    
 
 })
 

@@ -8,8 +8,9 @@ const mongoose = require('mongoose');
 
 
 const uri = "mongodb://127.0.0.1:27017/test"
+const atlasUrl = "mongodb+srv://tenx:10xxggwp@cluster0-rbzdx.mongodb.net/fcmdb?retryWrites=true"
 
-mongoose.connect(uri,{
+mongoose.connect(atlasUrl,{
     useNewUrlParser: true
 }, err=>{
     console.log(err);
