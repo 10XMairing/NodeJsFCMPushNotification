@@ -8,4 +8,5 @@ const server = http.createServer(app);
 
 
 server.listen(testPort);
+console.log('listening on port 3000');
 
